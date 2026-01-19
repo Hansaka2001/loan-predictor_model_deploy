@@ -43,5 +43,7 @@ The project is deployed and publicly accessible at:
 **Prediction Endpoint:**
 [https://hansakarukshan-loan-predictor-model.hf.space/predict](https://hansakarukshan-loan-predictor-model.hf.space/predict)
 
+Postman Screenshots of testing endpoint:
+
 ![Postman screenshot](./postman_screenshot.png)
 ![Postman screenshot](./postman_screenshot_02.png)
