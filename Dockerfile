@@ -1,22 +1,20 @@
-# 1. Base Image: Use a lightweight Python version
+# 1. Base Image
 FROM python:3.9-slim
 
-# 2. Set working directory inside the container
+# 2. Create a user with ID 1000 (Required by Hugging Face)
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
+
+# 3. Set working directory
 WORKDIR /app
 
-# 3. Copy requirements first (for caching optimization)
-COPY requirements.txt .
+# 4. Copy requirements and install
+COPY --chown=user ./requirements.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# 4. Install dependencies
-# We use --no-cache-dir to keep the image small
-RUN pip install --no-cache-dir -r requirements.txt
+# 5. Copy the rest of the application
+COPY --chown=user . /app
 
-# 5. Copy the rest of your application code (main.py, loan_model.pkl, etc.)
-COPY . .
-
-# 6. Expose the port the app runs on
-EXPOSE 8000
-
-# 7. Command to run the application
-# host 0.0.0.0 is crucial for Docker containers to accept external connections
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 6. Hugging Face expects port 7860
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
